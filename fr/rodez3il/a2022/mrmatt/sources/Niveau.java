@@ -1,5 +1,9 @@
 package fr.rodez3il.a2022.mrmatt.sources;
 
+import fr.rodez3il.a2022.mrmatt.sources.*;
+import fr.rodez3il.a2022.mrmatt.sources.objets.*;
+import Integer;
+
 public class Niveau {
 
   // Les objets sur le plateau du niveau
@@ -9,7 +13,7 @@ public class Niveau {
   private int joueurY;
 
   // Autres attributs que vous jugerez nécessaires...
-
+  
   /**
    * Constructeur public : crée un niveau depuis un fichier.
    * 
@@ -21,11 +25,26 @@ public class Niveau {
     chargerNiveau(chemin);
   }
 
+  private void chargerNiveau(String chemin) {
+    String fichier = Utils.lireFichier(chemin);
+    String[] lignes = fichier.split("\n");
+    int tailleX = Integer.parseInt(lignes[0]);
+    int tailleY = Integer.parseInt(lignes[1]);
+    this.plateau = new ObjetPlateau[tailleX][tailleY];
+    for(int i = 2; i < tailleX; i++) {
+      for (int j = 0; j < tailleY; j++) {
+        
+      }
+    }
+  }
+
   /**
-   * Javadoc à réaliser...
+   * échange les objets source et destination
    */
   private void echanger(int sourceX, int sourceY, int destinationX, int destinationY) {
-    // ........
+    ObjetPlateau temp = plateau[sourceX][sourceY];
+    plateau[sourceX][sourceY] = plateau[destinationX][destinationY];
+    plateau[destinationX][destinationY] = temp;
   }
 
   /**
