@@ -21,12 +21,8 @@ public class Niveau {
    * @param chemin .....
    * @author .............
    */
-  public Niveau(String chemin) {
-    this();
-    chargerNiveau(chemin);
-  }
 
-  private void chargerNiveau(String chemin) {
+  private void Niveau(String chemin) {
     String fichier = Utils.lireFichier(chemin);
     String[] lignes = fichier.split("\n");
     
@@ -38,7 +34,7 @@ public class Niveau {
     
     for(int i = 0; i < tailleX; i++) {
       for (int j = 0; j < tailleY; j++) {
-        char temp = depuisCharactere(lignes[i + 2].charAt(j));
+        ObjetPlateau temp = depuisCharactere(lignes[i + 2].charAt(j));
         plateau[i][j] = temp;
         if (temp == 'H') {
           joueurX = i;
