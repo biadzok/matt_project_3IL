@@ -2,7 +2,6 @@ package fr.rodez3il.a2022.mrmatt.sources;
 
 import fr.rodez3il.a2022.mrmatt.sources.*;
 import fr.rodez3il.a2022.mrmatt.sources.objets.*;
-import Integer;
 
 public class Niveau {
 
@@ -11,6 +10,8 @@ public class Niveau {
   // Position du joueur
   private int joueurX;
   private int joueurY;
+  private int pommesRestantes;
+  private int totalMouvements;
 
   // Autres attributs que vous jugerez nécessaires...
   
@@ -28,12 +29,24 @@ public class Niveau {
   private void chargerNiveau(String chemin) {
     String fichier = Utils.lireFichier(chemin);
     String[] lignes = fichier.split("\n");
+    
     int tailleX = Integer.parseInt(lignes[0]);
     int tailleY = Integer.parseInt(lignes[1]);
+    pommesRestantes = 0;
+    totalMouvements = 0;
     this.plateau = new ObjetPlateau[tailleX][tailleY];
-    for(int i = 2; i < tailleX; i++) {
+    
+    for(int i = 0; i < tailleX; i++) {
       for (int j = 0; j < tailleY; j++) {
-        
+        char temp = depuisCharactere(lignes[i + 2].charAt(j));
+        plateau[i][j] = temp;
+        if (temp == 'H') {
+          joueurX = i;
+          joueurY = j;
+        }
+        if (temp == '+') {
+          pommesRestantes++;
+        }
       }
     }
   }
@@ -52,7 +65,11 @@ public class Niveau {
    * ................
    */
   public void afficher() {
-    // TODO
+    for (int i = 0; i < plateau.length; i++) {
+      for (int j = 0; j < plateau[0].length; j++) {
+        plateau[i][j].afficher();
+      }
+    }
   }
 
   // TODO : patron visiteur du Rocher...
