@@ -65,11 +65,18 @@ public class Niveau {
    * ................
    */
   public void afficher() {
+    StringBuilder stringBuilder = new StringBuilder();
+    
     for (int i = 0; i < plateau.length; i++) {
       for (int j = 0; j < plateau[0].length; j++) {
-        plateau[i][j].afficher();
+        stringBuilder.append(plateau[i][j].afficher());
       }
+      stringbuilder.append('\n');
     }
+
+    System.out.println(stringBuilder.toString());
+    System.out.println("pommes restantes : " + pommesRestantes);
+    System.out.println("total de déplacements : " + totalMouvements);
   }
 
   // TODO : patron visiteur du Rocher...
