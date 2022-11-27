@@ -8,7 +8,7 @@ public class Pomme extends ObjetPlateau {
 	 * renvoie le caractère correspondant à l'objet
 	 */
   @Override
-  public abstract char afficher() {
+  public char afficher() {
     return '+';
   }
 

@@ -8,7 +8,7 @@ public class Rocher extends ObjetPlateau {
 	 * renvoie le caractère correspondant à l'objet
 	 */
   @Override
-  public abstract char afficher() {
+  public char afficher() {
     return '*';
   }
 
@@ -45,6 +45,6 @@ public class Rocher extends ObjetPlateau {
    * cours.
    */
   public void visiterPlateauCalculEtatSuivant(Niveau niveau, int x, int y) {
-    etatSuivantVisiteur(this, x, y);
+    // etatSuivantVisiteur(this, x, y);
   }
 }

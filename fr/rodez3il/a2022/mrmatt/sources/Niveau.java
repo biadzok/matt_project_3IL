@@ -1,6 +1,6 @@
 package fr.rodez3il.a2022.mrmatt.sources;
 
-import fr.rodez3il.a2022.mrmatt.sources.*;
+import fr.rodez3il.a2022.mrmatt.sources.Utils;
 import fr.rodez3il.a2022.mrmatt.sources.objets.*;
 
 public class Niveau {
@@ -22,7 +22,7 @@ public class Niveau {
    * @author .............
    */
 
-  private void Niveau(String chemin) {
+  public Niveau(String chemin) {
     String fichier = Utils.lireFichier(chemin);
     String[] lignes = fichier.split("\n");
     
@@ -32,15 +32,15 @@ public class Niveau {
     totalMouvements = 0;
     this.plateau = new ObjetPlateau[tailleX][tailleY];
     
-    for(int i = 0; i < tailleX; i++) {
+    for(int i = 0; i < tailleX - 2; i++) {
       for (int j = 0; j < tailleY; j++) {
-        ObjetPlateau temp = depuisCharactere(lignes[i + 2].charAt(j));
+        ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
         plateau[i][j] = temp;
-        if (temp == 'H') {
+        if (temp.afficher() == 'H') {
           joueurX = i;
           joueurY = j;
         }
-        if (temp == '+') {
+        if (temp.afficher() == '+') {
           pommesRestantes++;
         }
       }
@@ -67,7 +67,7 @@ public class Niveau {
       for (int j = 0; j < plateau[0].length; j++) {
         stringBuilder.append(plateau[i][j].afficher());
       }
-      stringbuilder.append('\n');
+      stringBuilder.append('\n');
     }
 
     System.out.println(stringBuilder.toString());
@@ -93,10 +93,14 @@ public class Niveau {
   // Illustrez les Javadocs manquantes lorsque vous coderez ces méthodes !
 
   public boolean enCours() {
+    // temp anti error
+    return false;
   }
 
   // Joue la commande C passée en paramètres
   public boolean jouer(Commande c) {
+    // temp anti error
+    return false;
   }
 
   /**
@@ -108,8 +112,7 @@ public class Niveau {
   /**
    */
   public boolean estIntermediaire() {
+    // temp anti error
+    return false;
   }
-
-  // Code pour empêcher la compilation
-
 }
