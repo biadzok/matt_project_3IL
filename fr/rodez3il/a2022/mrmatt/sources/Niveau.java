@@ -14,7 +14,7 @@ public class Niveau {
   private int totalMouvements;
 
   // Autres attributs que vous jugerez nécessaires...
-  
+
   /**
    * Constructeur public : crée un niveau depuis un fichier.
    * 
@@ -25,20 +25,20 @@ public class Niveau {
   public Niveau(String chemin) {
     String fichier = Utils.lireFichier(chemin);
     String[] lignes = fichier.split("\n");
-    
+
     int tailleX = Integer.parseInt(lignes[0]);
     int tailleY = Integer.parseInt(lignes[1]);
     pommesRestantes = 0;
     totalMouvements = 0;
-    this.plateau = new ObjetPlateau[tailleX][tailleY];
-    
-    for(int i = 0; i < tailleX - 2; i++) {
-      for (int j = 0; j < tailleY; j++) {
-        ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
+    this.plateau = new ObjetPlateau[tailleY][tailleX];
+
+    for (int i = 0; i < tailleY; i++) {
+      for (int j = 0; j < tailleX; j++) {
+          ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
         plateau[i][j] = temp;
         if (temp.afficher() == 'H') {
-          joueurX = i;
-          joueurY = j;
+          joueurX = j;
+          joueurY = i;
         }
         if (temp.afficher() == '+') {
           pommesRestantes++;
@@ -62,7 +62,7 @@ public class Niveau {
    */
   public void afficher() {
     StringBuilder stringBuilder = new StringBuilder();
-    
+
     for (int i = 0; i < plateau.length; i++) {
       for (int j = 0; j < plateau[0].length; j++) {
         stringBuilder.append(plateau[i][j].afficher());
