@@ -37,8 +37,8 @@ public class Niveau {
         ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
         plateau[i][j] = temp;
         if (temp.afficher() == 'H') {
-          joueurX = j;
-          joueurY = i;
+          joueurX = i;
+          joueurY = j;
         }
         if (temp.afficher() == '+') {
           pommesRestantes++;
@@ -51,7 +51,8 @@ public class Niveau {
    * échange les objets source et destination
    */
   private void echanger(int sourceX, int sourceY, int destinationX, int destinationY) {
-    ObjetPlateau temp = plateau[sourceX][sourceY];
+    // potentielle inversion x / y
+    ObjetPlateau temp = plateau[sourceY][sourceX];
     plateau[sourceX][sourceY] = plateau[destinationX][destinationY];
     plateau[destinationX][destinationY] = temp;
   }
@@ -75,9 +76,35 @@ public class Niveau {
     System.out.println("total de déplacements : " + totalMouvements);
   }
 
-  // TODO : patron visiteur du Rocher...
   public void etatSuivantVisiteur(Rocher r, int x, int y) {
+    if (r.etat == EtatRocher.FIXE && x < plateau.length && plateau[x][y].estVide()) {
+      // positions x et y à vérifier !!
+      r.etat = EtatRocher.CHUTE;
+    }
 
+    if (r.etat == EtatRocher.CHUTE) {
+      if (x == plateau.length)
+        r.etat = EtatRocher.FIXE;
+      else {
+        if (plateau[x + 1][y].estVide()) {
+          echanger(x, y, x + 1, y);
+        } else {
+          // si c'est un joueur, partie perdue !!!
+          // sinon :
+          if (plateau[x + 1][y].estGlissant()) {
+            // glissement gauche du rocher
+            if (plateau[x][y - 1].estVide() && plateau[x + 1][y - 1].estVide())
+              echanger(x, y, x + 1, y - 1);
+            else {
+              // glissement droit du rocher
+              if (plateau[x][y + 1].estVide() && plateau[x + 1][y + 1].estVide())
+                echanger(x, y, x + 1, y + 1);
+            }
+          } else
+            r.etat = EtatRocher.FIXE;
+        }
+      }
+    }
   }
 
   /**
@@ -87,7 +114,11 @@ public class Niveau {
    * @author
    */
   public void etatSuivant() {
-    // TODO
+    for (int x = plateau.length - 1; x >= 0; x--) {
+      for (int y = plateau[x].length - 1; y >= 0; y--) {
+        plateau[x][y].visiterPlateauCalculEtatSuivant(this, x, y);
+      }
+    }
   }
 
   // Illustrez les Javadocs manquantes lorsque vous coderez ces méthodes !
@@ -117,7 +148,7 @@ public class Niveau {
         break;
       case DROITE:
         estDeplacable = deplacementPossible(joueurX, joueurY + 1);
-        deltaX++;
+        deltaY++;
         break;
       case ANNULER:
         break;
@@ -133,18 +164,18 @@ public class Niveau {
 
   private boolean deplacementPossible(int x, int y) {
     boolean res = true;
-    if (y < 0 || y >= plateau.length || x < 0 || x >= plateau[0].length)
+    if (x < 0 || x >= plateau.length || y < 0 || y >= plateau[0].length)
       res = false;
     else {
-      res = plateau[y][x].estMarchable();
+      res = plateau[x][y].estMarchable();
     }
     return res;
   }
 
   public void deplacer(int deltaX, int deltaY) {
-    plateau[joueurY + deltaY][joueurX + deltaX] = plateau[joueurY][joueurX];
+    plateau[joueurX + deltaX][joueurY + deltaY] = plateau[joueurX][joueurY];
     ObjetPlateau temp = new Vide();
-    plateau[joueurY][joueurX] = temp;
+    plateau[joueurX][joueurY] = temp;
     joueurX = joueurX + deltaX;
     joueurY = joueurY + deltaY;
   }
