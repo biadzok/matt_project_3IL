@@ -34,7 +34,7 @@ public class Niveau {
 
     for (int i = 0; i < tailleY; i++) {
       for (int j = 0; j < tailleX; j++) {
-          ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
+        ObjetPlateau temp = ObjetPlateau.depuisCaractere(lignes[i + 2].charAt(j));
         plateau[i][j] = temp;
         if (temp.afficher() == 'H') {
           joueurX = j;
@@ -99,8 +99,52 @@ public class Niveau {
 
   // Joue la commande C passée en paramètres
   public boolean jouer(Commande c) {
-    // temp anti error
-    return false;
+    boolean estDeplacable = false;
+    int deltaX = 0;
+    int deltaY = 0;
+    switch (c) {
+      case HAUT:
+        estDeplacable = deplacementPossible(joueurX - 1, joueurY);
+        deltaX--;
+        break;
+      case GAUCHE:
+        estDeplacable = deplacementPossible(joueurX, joueurY - 1);
+        deltaY--;
+        break;
+      case BAS:
+        estDeplacable = deplacementPossible(joueurX + 1, joueurY);
+        deltaX++;
+        break;
+      case DROITE:
+        estDeplacable = deplacementPossible(joueurX, joueurY + 1);
+        deltaX++;
+        break;
+      case ANNULER:
+        break;
+      case QUITTER:
+        break;
+      default:
+    }
+    if (estDeplacable) {
+      deplacer(deltaX, deltaY);
+    }
+    return estDeplacable;
+  }
+
+  private boolean deplacementPossible(int x, int y) {
+    boolean res = true;
+    if (y < 0 || y >= plateau.length || x < 0 || x >= plateau[0].length)
+      res = false;
+    else {
+      res = plateau[y][x].estMarchable();
+    }
+    return res;
+  }
+
+  public void deplacer(int deltaX, int deltaY) {
+    plateau[joueurY - deltaY][joueurX - deltaX] = plateau[joueurY][joueurX];
+    ObjetPlateau temp = new Vide();
+    plateau[joueurY][joueurX] = temp;
   }
 
   /**
