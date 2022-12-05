@@ -142,9 +142,11 @@ public class Niveau {
   }
 
   public void deplacer(int deltaX, int deltaY) {
-    plateau[joueurY - deltaY][joueurX - deltaX] = plateau[joueurY][joueurX];
+    plateau[joueurY + deltaY][joueurX + deltaX] = plateau[joueurY][joueurX];
     ObjetPlateau temp = new Vide();
     plateau[joueurY][joueurX] = temp;
+    joueurX = joueurX + deltaX;
+    joueurY = joueurY + deltaY;
   }
 
   /**
