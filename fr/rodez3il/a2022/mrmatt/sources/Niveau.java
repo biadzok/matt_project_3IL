@@ -12,6 +12,7 @@ public class Niveau {
   private int joueurY;
   private int pommesRestantes;
   private int totalMouvements;
+  private boolean partieFinie;
 
   // Autres attributs que vous jugerez nécessaires...
 
@@ -30,6 +31,7 @@ public class Niveau {
     int tailleY = Integer.parseInt(lignes[1]);
     pommesRestantes = 0;
     totalMouvements = 0;
+    partieFinie = false;
     this.plateau = new ObjetPlateau[tailleY][tailleX];
 
     for (int i = 0; i < tailleY; i++) {
@@ -90,17 +92,23 @@ public class Niveau {
           echanger(x, y, x + 1, y);
         } else {
           // si c'est un joueur, partie perdue !!!
+          // besoin d'un patron visiteur ? ou alors utiliser le .afficher() mais c'est pas
+          // propre
+          // peut-être penser à changer le nombre de pommes pour s'assurer d'un bon
+          // résultat en cas de mort du joueur.
           // sinon :
           if (plateau[x + 1][y].estGlissant()) {
             // glissement gauche du rocher
             if (plateau[x][y - 1].estVide() && plateau[x + 1][y - 1].estVide())
               echanger(x, y, x + 1, y - 1);
             else {
+              // vérifier que le joueur est pas à gauche
               // glissement droit du rocher
               if (plateau[x][y + 1].estVide() && plateau[x + 1][y + 1].estVide())
                 echanger(x, y, x + 1, y + 1);
             }
           } else
+            // vérifier que le joueur est pas à droite
             r.etat = EtatRocher.FIXE;
         }
       }
@@ -111,7 +119,7 @@ public class Niveau {
    * Calcule l'état suivant du niveau.
    * ........
    * 
-   * @author
+   * @author Marin Bailhe
    */
   public void etatSuivant() {
     for (int x = plateau.length - 1; x >= 0; x--) {
@@ -124,8 +132,8 @@ public class Niveau {
   // Illustrez les Javadocs manquantes lorsque vous coderez ces méthodes !
 
   public boolean enCours() {
-    // temp anti error
-    return false;
+    // a revoir
+    return (!partieFinie);
   }
 
   // Joue la commande C passée en paramètres
@@ -184,12 +192,33 @@ public class Niveau {
    * Affiche l'état final (gagné ou perdu) une fois le jeu terminé.
    */
   public void afficherEtatFinal() {
+    if (pommesRestantes == 0)
+      System.out.println("Bravo vous avez fini le niveau !");
+    else {
+      if (pommesRestantes > 0)
+        System.out.println("Mince ! retentez votre chance !");
+      else
+        System.out.println("dysfonctionnement, merci d'en prévenir le developpeur.");
+    }
   }
 
   /**
    */
   public boolean estIntermediaire() {
-    // temp anti error
-    return false;
+    boolean intermediaire = true;
+    int i = 0;
+    int j = 0;
+    while (!intermediaire && i < plateau.length) {
+      while (!intermediaire && j < plateau[0].length) {
+        // si la case est un rocher en chute, intermediaire = true
+        if (plateau[i][j].afficher() == '*') {
+          Rocher temp = plateau[i][j];
+          intermediaire = (temp.etat == EtatRocher.CHUTE);
+        }
+        j++;
+      }
+      i++;
+    }
+    return res;
   }
 }
