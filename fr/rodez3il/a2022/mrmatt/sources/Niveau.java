@@ -33,6 +33,7 @@ public class Niveau {
     pommesRestantes = 0;
     totalMouvements = 0;
     partieFinie = false;
+    boolIntermediaire = false;
     this.plateau = new ObjetPlateau[tailleY][tailleX];
 
     for (int i = 0; i < tailleY; i++) {
@@ -101,21 +102,27 @@ public class Niveau {
           else {
             if (plateau[x + 1][y].estGlissant()) {
               // glissement gauche du rocher
-              if (plateau[x][y - 1].estVide() && plateau[x + 1][y - 1].estVide())
-                echanger(x, y, x + 1, y - 1);
+              if ((plateau[x][y - 1].estVide()) && (plateau[x + 1][y - 1].estVide() || (joueurX == x + 1 && joueurY == y - 1))
+                echanger(x, y, x, y - 1);
               else {
-                // vérifier que le joueur est pas à gauche
                 // glissement droit du rocher
-                if (plateau[x][y + 1].estVide() && plateau[x + 1][y + 1].estVide())
-                  echanger(x, y, x + 1, y + 1);
+                if ((plateau[x][y + 1].estVide()) && (plateau[x + 1][y + 1].estVide() || (joueurX == x + 1 && joueurY == y + 1)))
+                  echanger(x, y, x, y + 1);
               }
             } else
-              // vérifier que le joueur est pas à droite
               r.etat = EtatRocher.FIXE;
           }
         }
       }
     }
+
+    if (r.etat == EtatRocher.CHUTE)
+      boolIntermediaire = true;
+  }
+
+  // comptage du nombre de pommes;
+  public void etatSuivantVisiteur(Pomme p, int x, int y) {
+    pommesRestantes++;
   }
 
   /**
@@ -125,6 +132,8 @@ public class Niveau {
    * @author Marin Bailhe
    */
   public void etatSuivant() {
+    boolIntermediaire = false;
+    pommesRestantes = 0;
     for (int x = plateau.length - 1; x >= 0; x--) {
       for (int y = plateau[x].length - 1; y >= 0; y--) {
         plateau[x][y].visiterPlateauCalculEtatSuivant(this, x, y);
@@ -135,7 +144,6 @@ public class Niveau {
   // Illustrez les Javadocs manquantes lorsque vous coderez ces méthodes !
 
   public boolean enCours() {
-    // a revoir
     return (!partieFinie);
   }
 
