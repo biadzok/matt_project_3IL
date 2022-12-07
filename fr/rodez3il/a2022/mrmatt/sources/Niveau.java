@@ -13,6 +13,7 @@ public class Niveau {
   private int pommesRestantes;
   private int totalMouvements;
   private boolean partieFinie;
+  private boolean boolIntermediaire;
 
   // Autres attributs que vous jugerez nécessaires...
 
@@ -78,6 +79,9 @@ public class Niveau {
     System.out.println("total de déplacements : " + totalMouvements);
   }
 
+  /**
+   * retour du patron visiteur lors de la visite d'un rocher
+   */
   public void etatSuivantVisiteur(Rocher r, int x, int y) {
     if (r.etat == EtatRocher.FIXE && x < plateau.length && plateau[x][y].estVide()) {
       // positions x et y à vérifier !!
@@ -91,25 +95,24 @@ public class Niveau {
         if (plateau[x + 1][y].estVide()) {
           echanger(x, y, x + 1, y);
         } else {
-          // si c'est un joueur, partie perdue !!!
-          // besoin d'un patron visiteur ? ou alors utiliser le .afficher() mais c'est pas
-          // propre
-          // peut-être penser à changer le nombre de pommes pour s'assurer d'un bon
-          // résultat en cas de mort du joueur.
-          // sinon :
-          if (plateau[x + 1][y].estGlissant()) {
-            // glissement gauche du rocher
-            if (plateau[x][y - 1].estVide() && plateau[x + 1][y - 1].estVide())
-              echanger(x, y, x + 1, y - 1);
-            else {
-              // vérifier que le joueur est pas à gauche
-              // glissement droit du rocher
-              if (plateau[x][y + 1].estVide() && plateau[x + 1][y + 1].estVide())
-                echanger(x, y, x + 1, y + 1);
-            }
-          } else
-            // vérifier que le joueur est pas à droite
-            r.etat = EtatRocher.FIXE;
+          // si le joueur est sous le rocher, la partie est finie !
+          if (joueurX == x + 1 && joueurY == y)
+            partieFinie = true;
+          else {
+            if (plateau[x + 1][y].estGlissant()) {
+              // glissement gauche du rocher
+              if (plateau[x][y - 1].estVide() && plateau[x + 1][y - 1].estVide())
+                echanger(x, y, x + 1, y - 1);
+              else {
+                // vérifier que le joueur est pas à gauche
+                // glissement droit du rocher
+                if (plateau[x][y + 1].estVide() && plateau[x + 1][y + 1].estVide())
+                  echanger(x, y, x + 1, y + 1);
+              }
+            } else
+              // vérifier que le joueur est pas à droite
+              r.etat = EtatRocher.FIXE;
+          }
         }
       }
     }
@@ -205,20 +208,6 @@ public class Niveau {
   /**
    */
   public boolean estIntermediaire() {
-    boolean intermediaire = true;
-    int i = 0;
-    int j = 0;
-    while (!intermediaire && i < plateau.length) {
-      while (!intermediaire && j < plateau[0].length) {
-        // si la case est un rocher en chute, intermediaire = true
-        if (plateau[i][j].afficher() == '*') {
-          Rocher temp = plateau[i][j];
-          intermediaire = (temp.etat == EtatRocher.CHUTE);
-        }
-        j++;
-      }
-      i++;
-    }
-    return res;
+    return boolIntermediaire;
   }
 }
