@@ -7,6 +7,7 @@ public class Niveau {
 
   // Les objets sur le plateau du niveau
   private ObjetPlateau[][] plateau;
+  private ObjetPlateau[][] copiePlateau;
   // Position du joueur
   private int joueurX;
   private int joueurY;
@@ -34,6 +35,7 @@ public class Niveau {
     totalMouvements = 0;
     partieFinie = false;
     boolIntermediaire = false;
+    copiePlateau = null;
     this.plateau = new ObjetPlateau[tailleY][tailleX];
 
     for (int i = 0; i < tailleY; i++) {
@@ -178,6 +180,10 @@ public class Niveau {
         deltaY++;
         break;
       case ANNULER:
+        if (copiePlateau != null) {
+          plateau = copiePlateau;
+          copiePlateau = null;
+        }
         break;
       case QUITTER:
         partieFinie = true;
@@ -185,6 +191,7 @@ public class Niveau {
       default:
     }
     if (estDeplacable) {
+      copiePlateau = Utils.cloneTableau(plateau);
       deplacer(deltaX, deltaY);
     }
     return estDeplacable;
@@ -195,15 +202,31 @@ public class Niveau {
     if (x < 0 || x >= plateau.length || y < 0 || y >= plateau[0].length)
       res = false;
     else {
-      res = plateau[x][y].estMarchable();
+      if (plateau[x][y].estMarchable()) {
+        res = true;
+      }
+      else {
+        int deltaX = x - joueurX;
+        int deltaY = y - joueurY;
+        res = (deltaX == 0 && plateau[x][y].estPoussable() && plateau[x][y + deltaY].estVide());
+        System.out.println("déplacement : " + deltaX + " / " + deltaY);
+        System.out.println("déplacable : " + plateau[x][y].estPoussable());
+        System.out.println("déplacable : " + plateau[x + deltaX][y].estVide());
+      }
     }
     return res;
   }
 
   public void deplacer(int deltaX, int deltaY) {
-    plateau[joueurX + deltaX][joueurY + deltaY] = plateau[joueurX][joueurY];
+    if (plateau[joueurX + deltaX][joueurY + deltaY].estPoussable()) {
+      echanger(joueurX + deltaX, joueurY + deltaY, joueurX + deltaX * 2, joueurY + deltaY * 2);
+      echanger(joueurX + deltaX, joueurY + deltaY, joueurX, joueurY);
+    }
+    else {
+      plateau[joueurX + deltaX][joueurY + deltaY] = plateau[joueurX][joueurY];
     ObjetPlateau temp = new Vide();
     plateau[joueurX][joueurY] = temp;
+    }
     joueurX = joueurX + deltaX;
     joueurY = joueurY + deltaY;
   }
