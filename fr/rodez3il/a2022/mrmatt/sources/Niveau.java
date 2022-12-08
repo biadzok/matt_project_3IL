@@ -7,10 +7,12 @@ public class Niveau {
 
   // Les objets sur le plateau du niveau
   private ObjetPlateau[][] plateau;
-  private ObjetPlateau[][] copiePlateau;
   // Position du joueur
   private int joueurX;
   private int joueurY;
+  private ObjetPlateau[][] copiePlateau;
+  private int oldJoueurX;
+  private int oldJoueurY;
   private int pommesRestantes;
   private int totalMouvements;
   private boolean partieFinie;
@@ -93,8 +95,7 @@ public class Niveau {
     if (r.etat == EtatRocher.CHUTE) {
       if (x == plateau.length - 1) {
         r.etat = EtatRocher.FIXE;
-      }
-      else {
+      } else {
         if (plateau[x + 1][y].estVide()) {
           echanger(x, y, x + 1, y);
         } else {
@@ -103,8 +104,7 @@ public class Niveau {
             partieFinie = true;
             r.etat = EtatRocher.FIXE;
             System.out.println("position : " + x + " / " + y);
-          }
-          else {
+          } else {
             if (plateau[x + 1][y].estGlissant()) {
               // glissement gauche du rocher
               if ((plateau[x][y - 1].estVide())
@@ -118,8 +118,7 @@ public class Niveau {
                 else
                   r.etat = EtatRocher.FIXE;
               }
-            }
-            else
+            } else
               r.etat = EtatRocher.FIXE;
           }
         }
@@ -181,7 +180,9 @@ public class Niveau {
         break;
       case ANNULER:
         if (copiePlateau != null) {
-          plateau = copiePlateau;
+          plateau = Utils.cloneTableau(copiePlateau);
+          joueurX = oldJoueurX;
+          joueurY = oldJoueurY;
           copiePlateau = null;
         }
         break;
@@ -192,6 +193,8 @@ public class Niveau {
     }
     if (estDeplacable) {
       copiePlateau = Utils.cloneTableau(plateau);
+      oldJoueurX = joueurX;
+      oldJoueurY = joueurY;
       deplacer(deltaX, deltaY);
     }
     return estDeplacable;
@@ -204,14 +207,10 @@ public class Niveau {
     else {
       if (plateau[x][y].estMarchable()) {
         res = true;
-      }
-      else {
+      } else {
         int deltaX = x - joueurX;
         int deltaY = y - joueurY;
         res = (deltaX == 0 && plateau[x][y].estPoussable() && plateau[x][y + deltaY].estVide());
-        System.out.println("déplacement : " + deltaX + " / " + deltaY);
-        System.out.println("déplacable : " + plateau[x][y].estPoussable());
-        System.out.println("déplacable : " + plateau[x + deltaX][y].estVide());
       }
     }
     return res;
@@ -221,11 +220,10 @@ public class Niveau {
     if (plateau[joueurX + deltaX][joueurY + deltaY].estPoussable()) {
       echanger(joueurX + deltaX, joueurY + deltaY, joueurX + deltaX * 2, joueurY + deltaY * 2);
       echanger(joueurX + deltaX, joueurY + deltaY, joueurX, joueurY);
-    }
-    else {
+    } else {
       plateau[joueurX + deltaX][joueurY + deltaY] = plateau[joueurX][joueurY];
-    ObjetPlateau temp = new Vide();
-    plateau[joueurX][joueurY] = temp;
+      ObjetPlateau temp = new Vide();
+      plateau[joueurX][joueurY] = temp;
     }
     joueurX = joueurX + deltaX;
     joueurY = joueurY + deltaY;
