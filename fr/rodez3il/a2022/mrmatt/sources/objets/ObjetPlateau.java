@@ -36,8 +36,8 @@ public abstract class ObjetPlateau {
 
   /// Autres fonctions à réaliser ici...
   /**
-	 * renvoie le caractère correspondant à l'objet
-	 */
+   * renvoie le caractère correspondant à l'objet
+   */
   public abstract char afficher();
 
   /**
@@ -75,6 +75,5 @@ public abstract class ObjetPlateau {
    * @param niveau le niveau
    */
   public void visiterPlateauCalculEtatSuivant(Niveau niveau, int x, int y) {
-    // ! NE PAS OUBLIER LA FONCTION ET LA JAVADOC!
   }
 }

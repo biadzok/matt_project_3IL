@@ -46,7 +46,8 @@ public class Pomme extends ObjetPlateau {
    * 
    * @param niveau le niveau, x et y les coordonnées de la pomme
    */
-  public void visiterPlateauCalculEtatSuivant(Niveau niveau, int x, int y) {
+  @Override
+  public void visiterPlateauCalculEtatSuivant(Niveau plateau, int x, int y) {
     plateau.etatSuivantVisiteur(this, x, y);
   }
 }

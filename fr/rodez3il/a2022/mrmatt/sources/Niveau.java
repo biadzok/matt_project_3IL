@@ -56,7 +56,7 @@ public class Niveau {
    */
   private void echanger(int sourceX, int sourceY, int destinationX, int destinationY) {
     // potentielle inversion x / y
-    ObjetPlateau temp = plateau[sourceY][sourceX];
+    ObjetPlateau temp = plateau[sourceX][sourceY];
     plateau[sourceX][sourceY] = plateau[destinationX][destinationY];
     plateau[destinationX][destinationY] = temp;
   }
@@ -84,32 +84,40 @@ public class Niveau {
    * retour du patron visiteur lors de la visite d'un rocher
    */
   public void etatSuivantVisiteur(Rocher r, int x, int y) {
-    if (r.etat == EtatRocher.FIXE && x < plateau.length && plateau[x][y].estVide()) {
-      // positions x et y à vérifier !!
+    if (r.etat == EtatRocher.FIXE && x < plateau.length - 1 && plateau[x + 1][y].estVide()) {
       r.etat = EtatRocher.CHUTE;
     }
 
     if (r.etat == EtatRocher.CHUTE) {
-      if (x == plateau.length)
+      if (x == plateau.length - 1) {
         r.etat = EtatRocher.FIXE;
+      }
       else {
         if (plateau[x + 1][y].estVide()) {
           echanger(x, y, x + 1, y);
         } else {
           // si le joueur est sous le rocher, la partie est finie !
-          if (joueurX == x + 1 && joueurY == y)
+          if (joueurX == x + 1 && joueurY == y) {
             partieFinie = true;
+            r.etat = EtatRocher.FIXE;
+            System.out.println("position : " + x + " / " + y);
+          }
           else {
             if (plateau[x + 1][y].estGlissant()) {
               // glissement gauche du rocher
-              if ((plateau[x][y - 1].estVide()) && (plateau[x + 1][y - 1].estVide() || (joueurX == x + 1 && joueurY == y - 1))
+              if ((plateau[x][y - 1].estVide())
+                  && (plateau[x + 1][y - 1].estVide() || (joueurX == x + 1 && joueurY == y - 1))) {
                 echanger(x, y, x, y - 1);
-              else {
+              } else {
                 // glissement droit du rocher
-                if ((plateau[x][y + 1].estVide()) && (plateau[x + 1][y + 1].estVide() || (joueurX == x + 1 && joueurY == y + 1)))
+                if ((plateau[x][y + 1].estVide())
+                    && (plateau[x + 1][y + 1].estVide() || (joueurX == x + 1 && joueurY == y + 1)))
                   echanger(x, y, x, y + 1);
+                else
+                  r.etat = EtatRocher.FIXE;
               }
-            } else
+            }
+            else
               r.etat = EtatRocher.FIXE;
           }
         }
@@ -172,6 +180,7 @@ public class Niveau {
       case ANNULER:
         break;
       case QUITTER:
+        partieFinie = true;
         break;
       default:
     }
