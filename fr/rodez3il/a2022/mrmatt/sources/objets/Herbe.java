@@ -47,6 +47,5 @@ public class Herbe extends ObjetPlateau {
    * @param niveau le niveau
    */
   public void visiterPlateauCalculEtatSuivant(Niveau niveau, int x, int y) {
-    // ! NE PAS OUBLIER LA FONCTION ET LA JAVADOC!
   }
 }
